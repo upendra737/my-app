@@ -133,7 +133,7 @@ export default function Home() {
 
             {/* ✅ UPDATED — Niru's Profile Photo */}
             <div className="w-48 h-48 rounded-full border-4 border-pink-300 shadow-xl overflow-hidden mb-12 relative">
-              <img src="/Niru.jpg" alt="Niru" className="w-full h-full object-cover" />
+              <img src="/Niru.JPG" alt="Niru" className="w-full h-full object-cover" />
               <div className="absolute -top-2 -right-2 text-2xl animate-bounce">💕</div>
               <div className="absolute -bottom-2 -left-2 text-2xl animate-bounce">🌹</div>
             </div>
@@ -344,8 +344,8 @@ export default function Home() {
             <div className="mt-8">
               <h3 className="text-center font-bold text-rose-500 mb-4">Our Memories 📸</h3>
               <div className="grid grid-cols-3 gap-3">
-                {["photo1.jpg", "photo2.jpg", "photo3.png",
-                  "photo4.png", "photo5.png", "photo6.png"].map((photo, i) => (
+                {["photo1.JPG", "photo2.JPG", "photo3.PNG",
+                  "photo4.PNG", "photo5.PNG", "photo6.PNG"].map((photo, i) => (
                   <div key={i} className="aspect-square rounded-2xl overflow-hidden border-2 border-pink-200 shadow-sm">
                     <img
                       src={`/${photo}`}
