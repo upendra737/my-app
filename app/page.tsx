@@ -1,4 +1,4 @@
-     "use client";
+"use client";
 import { useState, useEffect } from "react";
 
 const reasons = [
@@ -131,10 +131,9 @@ export default function Home() {
               A little corner of the internet dedicated entirely to you and how much you mean to me.
             </p>
 
-            {/* Photo Placeholder */}
-            <div className="w-48 h-48 rounded-full bg-gradient-to-br from-pink-200 to-rose-300 border-4 border-pink-300 shadow-xl flex flex-col items-center justify-center mb-12 relative">
-              <span className="text-5xl mb-2">📸</span>
-              <p className="text-pink-500 text-xs text-center px-4">Add your favourite photo of Niru here</p>
+            {/* ✅ UPDATED — Niru's Profile Photo */}
+            <div className="w-48 h-48 rounded-full border-4 border-pink-300 shadow-xl overflow-hidden mb-12 relative">
+              <img src="/Niru.jpg" alt="Niru" className="w-full h-full object-cover" />
               <div className="absolute -top-2 -right-2 text-2xl animate-bounce">💕</div>
               <div className="absolute -bottom-2 -left-2 text-2xl animate-bounce">🌹</div>
             </div>
@@ -174,7 +173,6 @@ export default function Home() {
             </div>
 
             <div className={`bg-white/80 backdrop-blur border border-pink-200 rounded-3xl p-8 shadow-xl transition-all duration-1000 ${letterVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-              {/* Letter Paper Lines */}
               <div className="relative">
                 <div className="absolute inset-0 flex flex-col gap-8 pt-8">
                   {Array.from({ length: 12 }).map((_, i) => (
@@ -309,9 +307,7 @@ export default function Home() {
             </div>
 
             <div className="relative">
-              {/* Timeline Line */}
               <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-rose-300 to-pink-200" />
-
               <div className="space-y-8">
                 {timeline.map((item, i) => (
                   <div
@@ -344,18 +340,21 @@ export default function Home() {
               <p className="font-bold text-lg">Always & Forever 🌹</p>
             </div>
 
-            {/* Photo Placeholders */}
+            {/* ✅ UPDATED — Memory Photos */}
             <div className="mt-8">
               <h3 className="text-center font-bold text-rose-500 mb-4">Our Memories 📸</h3>
               <div className="grid grid-cols-3 gap-3">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="aspect-square bg-gradient-to-br from-pink-100 to-rose-100 rounded-2xl border-2 border-pink-200 flex flex-col items-center justify-center">
-                    <span className="text-2xl">📸</span>
-                    <span className="text-pink-300 text-xs mt-1">Memory {i + 1}</span>
+                {["photo1.jpg", "photo2.jpg", "photo3.png",
+                  "photo4.png", "photo5.png", "photo6.png"].map((photo, i) => (
+                  <div key={i} className="aspect-square rounded-2xl overflow-hidden border-2 border-pink-200 shadow-sm">
+                    <img
+                      src={`/${photo}`}
+                      alt={`Memory ${i + 1}`}
+                      className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                    />
                   </div>
                 ))}
               </div>
-              <p className="text-center text-pink-300 text-xs mt-3">Replace placeholders with your favourite photos together 💕</p>
             </div>
 
             <button
