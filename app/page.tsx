@@ -450,7 +450,7 @@ export default function Home() {
                     {player.role === "Batsman" ? (
                       <>
                         <div className="bg-gray-800 rounded-xl p-2 text-center">
-                          <p className="font-black text-green-400">{player.runs.toLocaleString()}</p>
+                          <p className="font-black text-green-400">{player.runs?.toLocaleString()}</p>
                           <p className="text-gray-500 text-xs">Runs</p>
                         </div>
                         <div className="bg-gray-800 rounded-xl p-2 text-center">
