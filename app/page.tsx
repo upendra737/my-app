@@ -345,7 +345,7 @@ export default function Home() {
               <h3 className="text-center font-bold text-rose-500 mb-4">Our Memories 📸</h3>
               <div className="grid grid-cols-3 gap-3">
                 {["photo1.JPG", "photo2.JPG", "photo3.PNG",
-                  "photo4.PNG", "photo5.PNG", "photo6.PNG"].map((photo, i) => (
+                  "photo4.PNG", "photo5.PNG", "photo6.JPG"].map((photo, i) => (
                   <div key={i} className="aspect-square rounded-2xl overflow-hidden border-2 border-pink-200 shadow-sm">
                     <img
                       src={`/${photo}`}
