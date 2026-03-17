@@ -1,517 +1,895 @@
 "use client";
-<<<<<<< HEAD
 import { useState } from "react";
 
-const teams = [
-  { name: "India", code: "IND", flag: "🇮🇳", ranking: 1, points: 121, color: "from-blue-600 to-orange-500" },
-  { name: "Australia", code: "AUS", flag: "🇦🇺", ranking: 2, points: 118, color: "from-yellow-500 to-green-600" },
-  { name: "England", code: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", ranking: 3, points: 112, color: "from-blue-700 to-red-600" },
-  { name: "South Africa", code: "SA", flag: "🇿🇦", ranking: 4, points: 108, color: "from-green-600 to-yellow-500" },
-  { name: "New Zealand", code: "NZ", flag: "🇳🇿", ranking: 5, points: 104, color: "from-black to-white" },
-  { name: "Pakistan", code: "PAK", flag: "🇵🇰", ranking: 6, points: 98, color: "from-green-700 to-white" },
-  { name: "West Indies", code: "WI", flag: "🏏", ranking: 7, points: 89, color: "from-red-700 to-yellow-500" },
-  { name: "Sri Lanka", code: "SL", flag: "🇱🇰", ranking: 8, points: 85, color: "from-blue-800 to-yellow-400" },
+type Tab = "home" | "registration" | "study" | "quiz" | "tips" | "resources";
+
+const registrationSteps = [
+  {
+    step: 1,
+    title: "Complete AHPRA Self-Check",
+    duration: "1-2 weeks",
+    cost: "Free",
+    icon: "✅",
+    description: "Visit the AHPRA IQNM Assessment Portal and complete the self-check to determine your eligibility stream.",
+    details: [
+      "Go to ahpra.gov.au and create an account",
+      "Complete the Internationally Qualified Nurse & Midwife (IQNM) self-check",
+      "You will be placed in Stream A, B, or C",
+      "Most international nurses are placed in Stream B (OBA Pathway)",
+      "Stream B requires NCLEX-RN + OSCE examinations",
+    ],
+    warning: "Stream C candidates must upgrade their qualifications before proceeding.",
+  },
+  {
+    step: 2,
+    title: "Pay AHPRA Assessment Fee",
+    duration: "Immediate",
+    cost: "AUD $410",
+    icon: "💳",
+    description: "Pay the non-refundable IQNM assessment fee to proceed with your application.",
+    details: [
+      "Fee is AUD $410 — non-refundable",
+      "Payment is made through the AHPRA portal",
+      "Unlocks access to orientation videos and quiz",
+      "Complete 90-minute video orientation",
+      "Pass the orientation quiz to proceed",
+    ],
+    warning: "This fee is non-refundable regardless of outcome.",
+  },
+  {
+    step: 3,
+    title: "Submit Portfolio Documents",
+    duration: "4-8 weeks",
+    cost: "Varies",
+    icon: "📁",
+    description: "Upload all required certified documents to your AHPRA portfolio.",
+    details: [
+      "Proof of identity (passport, birth certificate)",
+      "Nursing qualification certificates",
+      "Official academic transcripts",
+      "Registration certificate from home country",
+      "English language proficiency results (IELTS/OET/TOEFL)",
+      "All non-English documents must be translated",
+      "Documents must be certified and attested",
+    ],
+    warning: "Even small errors in documentation can delay your application by months!",
+  },
+  {
+    step: 4,
+    title: "English Language Proficiency",
+    duration: "Ongoing",
+    cost: "AUD $300-500",
+    icon: "🗣️",
+    description: "Demonstrate English proficiency through an approved test.",
+    details: [
+      "IELTS Academic: minimum 7.0 overall (no band below 7.0)",
+      "OET: minimum Grade B in all four components",
+      "TOEFL iBT: minimum score of 94",
+      "PTE Academic: minimum score of 65",
+      "Results must be less than 3 years old",
+    ],
+    warning: "OET is highly recommended as it is healthcare-specific and easier for nurses.",
+  },
+  {
+    step: 5,
+    title: "Receive ATT & Book NCLEX-RN",
+    duration: "2-4 weeks after approval",
+    cost: "USD $350-400",
+    icon: "📋",
+    description: "Receive your Authorisation to Test (ATT) from AHPRA and book your NCLEX-RN exam.",
+    details: [
+      "AHPRA sends ATT number via email",
+      "ATT is valid for only 90 days — book immediately!",
+      "Register at pearsonvue.com/nclex",
+      "Choose a Pearson VUE test centre near you",
+      "Exam can be taken at centres worldwide",
+      "Available in major Australian cities",
+    ],
+    warning: "ATT is only valid for 90 days! Missing this deadline may close your dashboard.",
+  },
+  {
+    step: 6,
+    title: "Pass NCLEX-RN Exam",
+    duration: "Up to 5 hours",
+    cost: "Included above",
+    icon: "📝",
+    description: "Sit and pass the Next Generation NCLEX-RN (NGN) examination.",
+    details: [
+      "Computerised Adaptive Testing (CAT) format",
+      "Minimum 85 questions, maximum 150 questions",
+      "Up to 5 hours exam duration",
+      "Tests clinical judgment and decision making",
+      "Next Generation NCLEX (NGN) format since 2023",
+      "Results typically available within 48 hours",
+    ],
+    warning: "International nurses have a 45-55% pass rate — thorough preparation is essential!",
+  },
+  {
+    step: 7,
+    title: "Pass OSCE Exam",
+    duration: "1 day",
+    cost: "AUD ~$4,000",
+    icon: "🏥",
+    description: "Complete the Objective Structured Clinical Examination (OSCE) in Australia.",
+    details: [
+      "Must travel to Australia for this exam",
+      "Practical hands-on clinical skills assessment",
+      "Multiple simulated clinical stations",
+      "Interact with actor-patients",
+      "Assessed on clinical skills and communication",
+      "Conducted by ACER (Australian Council for Educational Research)",
+    ],
+    warning: "You must be physically present in Australia for the OSCE exam.",
+  },
+  {
+    step: 8,
+    title: "Apply for Final Registration",
+    duration: "4-8 weeks",
+    cost: "AUD ~$150",
+    icon: "🎓",
+    description: "Submit your final registration application to AHPRA to become a Registered Nurse in Australia.",
+    details: [
+      "Submit all passed exam results",
+      "Provide police clearance check",
+      "Confirm identity verification",
+      "Pay final registration fee",
+      "Receive registration number",
+      "Can now legally practice as RN anywhere in Australia",
+    ],
+    warning: "Total process typically takes 9-12 months from start to finish.",
+  },
 ];
 
-const liveMatches = [
+const studyTopics = [
+  {
+    category: "Safe & Effective Care Environment",
+    percentage: "17-23%",
+    icon: "🛡️",
+    color: "blue",
+    topics: [
+      "Management of Care — delegation, prioritisation, case management",
+      "Safety & Infection Control — standard precautions, error prevention",
+      "Accident & Error Prevention",
+      "Emergency Response Planning",
+      "Handling Hazardous Materials",
+      "Safe Use of Equipment",
+    ],
+  },
+  {
+    category: "Health Promotion & Maintenance",
+    percentage: "6-12%",
+    icon: "💚",
+    color: "green",
+    topics: [
+      "Ante/Intra/Postpartum and Newborn Care",
+      "Developmental Stages & Transitions",
+      "Health Screening",
+      "High Risk Behaviours",
+      "Lifestyle Choices",
+      "Self-Care & Disease Prevention",
+    ],
+  },
+  {
+    category: "Psychosocial Integrity",
+    percentage: "6-12%",
+    icon: "🧠",
+    color: "purple",
+    topics: [
+      "Abuse & Neglect",
+      "Behavioural Interventions",
+      "Chemical & Other Dependencies",
+      "Coping Mechanisms",
+      "Crisis Intervention",
+      "Mental Health Concepts",
+      "Therapeutic Communication",
+    ],
+  },
+  {
+    category: "Physiological Integrity",
+    percentage: "38-62%",
+    icon: "❤️",
+    color: "red",
+    topics: [
+      "Basic Care & Comfort — hygiene, mobility, nutrition",
+      "Pharmacological Therapies — medication administration, adverse effects",
+      "Reduction of Risk Potential — lab values, diagnostic tests",
+      "Physiological Adaptation — fluid/electrolytes, medical emergencies",
+    ],
+  },
+];
+
+const quizQuestions = [
   {
     id: 1,
-    status: "LIVE",
-    format: "T20I",
-    tournament: "ICC World Cup 2026",
-    team1: { name: "India", code: "IND", flag: "🇮🇳", score: "186/4", overs: "18.3" },
-    team2: { name: "Australia", code: "AUS", flag: "🇦🇺", score: "142/3", overs: "14.2" },
-    batting: "AUS",
-    note: "Australia need 45 runs off 34 balls",
-    crr: "9.93",
-    rrr: "7.94",
-    venue: "MCG, Melbourne",
-    batsmen: [
-      { name: "Steve Smith", runs: 67, balls: 45, fours: 6, sixes: 2, sr: "148.9" },
-      { name: "Glenn Maxwell", runs: 34, balls: 18, fours: 2, sixes: 3, sr: "188.9" },
+    question: "A nurse is caring for a patient receiving IV fluids. The patient reports shortness of breath and the nurse notices jugular vein distension. What is the priority nursing action?",
+    options: [
+      "Increase the IV flow rate",
+      "Slow or stop the IV infusion and notify the physician",
+      "Elevate the patient's legs",
+      "Administer oxygen at 2L per min",
     ],
-    bowlers: [
-      { name: "Jasprit Bumrah", overs: "3.2", runs: 24, wickets: 2, econ: "7.20" },
-      { name: "Mohammed Siraj", overs: "3.0", runs: 31, wickets: 1, econ: "10.33" },
-    ],
+    correct: 1,
+    explanation: "These signs indicate fluid volume excess. The priority is to slow or stop the IV infusion immediately and notify the physician to prevent further complications like pulmonary edema.",
+    category: "Physiological Integrity",
   },
   {
     id: 2,
-    status: "LIVE",
-    format: "ODI",
-    tournament: "Champions Trophy 2026",
-    team1: { name: "England", code: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", score: "287/6", overs: "50.0" },
-    team2: { name: "South Africa", code: "SA", flag: "🇿🇦", score: "201/5", overs: "35.4" },
-    batting: "SA",
-    note: "South Africa need 87 runs off 86 balls",
-    crr: "5.64",
-    rrr: "6.07",
-    venue: "Lord's, London",
-    batsmen: [
-      { name: "Temba Bavuma", runs: 78, balls: 92, fours: 7, sixes: 1, sr: "84.8" },
-      { name: "David Miller", runs: 45, balls: 38, fours: 3, sixes: 2, sr: "118.4" },
+    question: "A nurse is delegating tasks to a nursing assistant. Which task is MOST appropriate to delegate?",
+    options: [
+      "Assessing a newly admitted patient",
+      "Administering oral medications",
+      "Measuring and recording vital signs of a stable patient",
+      "Teaching a patient about insulin injection",
     ],
-    bowlers: [
-      { name: "Joe Root", overs: "8.4", runs: 42, wickets: 2, econ: "4.85" },
-      { name: "Mark Wood", overs: "7.0", runs: 51, wickets: 1, econ: "7.29" },
-    ],
-  },
-];
-
-const recentResults = [
-  {
-    id: 1,
-    format: "T20I",
-    tournament: "ICC World Cup 2026",
-    team1: { name: "Pakistan", flag: "🇵🇰", score: "167/8", overs: "20" },
-    team2: { name: "New Zealand", flag: "🇳🇿", score: "171/4", overs: "19.2" },
-    result: "New Zealand won by 6 wickets",
-    date: "Mar 16, 2026",
-    venue: "Eden Park, Auckland",
-    mom: "Kane Williamson (72* off 48)",
-  },
-  {
-    id: 2,
-    format: "Test",
-    tournament: "Border-Gavaskar Trophy",
-    team1: { name: "India", flag: "🇮🇳", score: "421 & 198/4", overs: "" },
-    team2: { name: "Australia", flag: "🇦🇺", score: "389", overs: "" },
-    result: "India won by 6 wickets",
-    date: "Mar 14, 2026",
-    venue: "SCG, Sydney",
-    mom: "Yashasvi Jaiswal (134 & 67*)",
+    correct: 2,
+    explanation: "Measuring vital signs on a stable patient is within the scope of practice for a nursing assistant. Assessment, medication administration, and patient teaching require a registered nurse.",
+    category: "Safe & Effective Care",
   },
   {
     id: 3,
-    format: "ODI",
-    tournament: "Champions Trophy 2026",
-    team1: { name: "West Indies", flag: "🏏", score: "245/9", overs: "50" },
-    team2: { name: "Sri Lanka", flag: "🇱🇰", score: "248/6", overs: "48.3" },
-    result: "Sri Lanka won by 4 wickets",
-    date: "Mar 13, 2026",
-    venue: "R.Premadasa, Colombo",
-    mom: "Kusal Mendis (89 off 97)",
+    question: "A patient with diabetes reports feeling shaky, sweaty, and confused. Blood glucose is 3.2 mmol/L. What is the FIRST action the nurse should take?",
+    options: [
+      "Call the physician immediately",
+      "Give 15-20 grams of fast-acting carbohydrate",
+      "Administer insulin as prescribed",
+      "Recheck blood glucose in 1 hour",
+    ],
+    correct: 1,
+    explanation: "The patient is experiencing hypoglycemia (BGL below 4.0 mmol/L). The immediate action is to give 15-20g of fast-acting carbohydrate using the Rule of 15. Insulin would worsen hypoglycemia.",
+    category: "Physiological Integrity",
   },
   {
     id: 4,
-    format: "T20I",
-    tournament: "ICC World Cup 2026",
-    team1: { name: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", score: "198/4", overs: "20" },
-    team2: { name: "South Africa", flag: "🇿🇦", score: "189/7", overs: "20" },
-    result: "England won by 9 runs",
-    date: "Mar 12, 2026",
-    venue: "Edgbaston, Birmingham",
-    mom: "Jos Buttler (87 off 52)",
+    question: "A nurse finds that the physician ordered a dose that seems too high. What should the nurse do FIRST?",
+    options: [
+      "Administer the medication as ordered",
+      "Refuse to give the medication",
+      "Consult a drug reference and clarify with the prescriber",
+      "Give half the ordered dose",
+    ],
+    correct: 2,
+    explanation: "The nurse should verify unusual orders by consulting a drug reference and then clarifying with the prescribing physician before administering. Never alter doses without physician approval.",
+    category: "Pharmacological Therapies",
+  },
+  {
+    id: 5,
+    question: "Which patient should the nurse assess FIRST after receiving handover?",
+    options: [
+      "A patient with stable vital signs requesting pain medication",
+      "A post-op patient with respiratory rate of 28 and oxygen saturation of 91%",
+      "A diabetic patient whose breakfast tray has arrived",
+      "A patient asking to use the bathroom",
+    ],
+    correct: 1,
+    explanation: "Using ABC prioritisation — the post-op patient with respiratory distress (RR 28, SpO2 91%) is the most critical and must be assessed first as respiratory compromise can rapidly become life-threatening.",
+    category: "Safe & Effective Care",
+  },
+  {
+    id: 6,
+    question: "A nurse is caring for a patient with a potassium level of 6.2 mEq/L. Which finding requires IMMEDIATE intervention?",
+    options: [
+      "Muscle weakness in the legs",
+      "Peaked T waves on ECG",
+      "Increased urinary output",
+      "Mild nausea",
+    ],
+    correct: 1,
+    explanation: "Peaked T waves on ECG indicate hyperkalemia affecting cardiac conduction. This is a cardiac emergency requiring immediate intervention as it can lead to fatal arrhythmias.",
+    category: "Physiological Integrity",
+  },
+  {
+    id: 7,
+    question: "A nurse receives orders for four patients. Which order should the nurse implement FIRST?",
+    options: [
+      "Administer a scheduled antibiotic for a patient with pneumonia",
+      "Insert a urinary catheter for a patient before surgery in 3 hours",
+      "Administer naloxone to a patient with a respiratory rate of 6",
+      "Change a dressing on a post-operative wound",
+    ],
+    correct: 2,
+    explanation: "A respiratory rate of 6 is life-threatening. Naloxone reverses opioid-induced respiratory depression. This is the most urgent situation using ABC prioritisation.",
+    category: "Pharmacological Therapies",
+  },
+  {
+    id: 8,
+    question: "Which action by the nurse BEST demonstrates therapeutic communication?",
+    options: [
+      "Telling the patient everything will be okay",
+      "Saying I understand exactly how you feel",
+      "Asking the patient to tell you more about what they are feeling",
+      "Changing the subject when the patient becomes upset",
+    ],
+    correct: 2,
+    explanation: "Asking open-ended questions encourages the patient to express feelings and demonstrates active listening. False reassurance and claiming to understand are non-therapeutic responses.",
+    category: "Psychosocial Integrity",
   },
 ];
 
-const schedule = [
-  { id: 1, format: "T20I", tournament: "ICC World Cup 2026", team1: { name: "India", flag: "🇮🇳" }, team2: { name: "Pakistan", flag: "🇵🇰" }, date: "Mar 19, 2026", time: "2:00 PM AEDT", venue: "Narendra Modi Stadium, Ahmedabad" },
-  { id: 2, format: "ODI", tournament: "Champions Trophy 2026", team1: { name: "Australia", flag: "🇦🇺" }, team2: { name: "New Zealand", flag: "🇳🇿" }, date: "Mar 20, 2026", time: "10:00 AM AEDT", venue: "SCG, Sydney" },
-  { id: 3, format: "Test", tournament: "Border-Gavaskar Trophy", team1: { name: "India", flag: "🇮🇳" }, team2: { name: "Australia", flag: "🇦🇺" }, date: "Mar 22, 2026", time: "11:00 AM AEDT", venue: "MCG, Melbourne" },
-  { id: 4, format: "T20I", tournament: "ICC World Cup 2026", team1: { name: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" }, team2: { name: "West Indies", flag: "🏏" }, date: "Mar 23, 2026", time: "6:00 PM AEDT", venue: "Lord's, London" },
-  { id: 5, format: "ODI", tournament: "Champions Trophy 2026", team1: { name: "Sri Lanka", flag: "🇱🇰" }, team2: { name: "Pakistan", flag: "🇵🇰" }, date: "Mar 24, 2026", time: "3:00 PM AEDT", venue: "R.Premadasa, Colombo" },
+const examTips = [
+  {
+    title: "Master Clinical Judgment",
+    icon: "🧠",
+    color: "blue",
+    tips: [
+      "NCLEX tests HOW you think, not just WHAT you know",
+      "Use the nursing process: Assess, Diagnose, Plan, Implement, Evaluate",
+      "Always assess BEFORE intervening",
+      "Use ABC (Airway, Breathing, Circulation) for prioritisation",
+      "Maslow's hierarchy helps with psychosocial questions",
+    ],
+  },
+  {
+    title: "Next Generation NCLEX (NGN) Tips",
+    icon: "⚡",
+    color: "purple",
+    tips: [
+      "NGN focuses on clinical judgment — not memorisation",
+      "New question types: Extended drag & drop, matrix grids, bow-tie questions",
+      "Practice case study style questions",
+      "Focus on recognising cues and generating solutions",
+      "Understand rationales — do not just memorise answers",
+    ],
+  },
+  {
+    title: "Prioritisation Strategies",
+    icon: "🎯",
+    color: "red",
+    tips: [
+      "Acute and unstable patients always before stable patients",
+      "Actual problems before potential problems",
+      "Life-threatening before non-life-threatening",
+      "Use SBAR for communication questions",
+      "Remember: Assess first, then intervene",
+    ],
+  },
+  {
+    title: "Pharmacology Tips",
+    icon: "💊",
+    color: "green",
+    tips: [
+      "Know the 5 Rights: Right patient, drug, dose, route, time",
+      "Learn drug name endings (e.g., -olol = beta blocker)",
+      "Focus on high-alert medications: insulin, heparin, warfarin",
+      "Know common side effects and antidotes",
+      "Always check allergies before administration",
+    ],
+  },
+  {
+    title: "Exam Day Strategies",
+    icon: "📝",
+    color: "orange",
+    tips: [
+      "Get 8 hours sleep the night before",
+      "Arrive at Pearson VUE centre 30 mins early",
+      "Bring valid photo ID — passport recommended",
+      "Trust your first instinct on most questions",
+      "Take breaks if feeling overwhelmed",
+    ],
+  },
+  {
+    title: "Study Schedule Tips",
+    icon: "📅",
+    color: "teal",
+    tips: [
+      "Study consistently — 2-4 hours daily is better than cramming",
+      "Use UWorld, Kaplan, or Archer for practice questions",
+      "Aim for 75% or above on practice tests",
+      "Review rationales for both correct and incorrect answers",
+      "Allow 3-6 months of dedicated preparation",
+    ],
+  },
 ];
 
-const players = [
-  { name: "Virat Kohli", country: "India", flag: "🇮🇳", role: "Batsman", format: "ODI", rank: 1, rating: 890, runs: 13848, avg: 58.18, hundreds: 50, fifties: 72, image: "VK" },
-  { name: "Steve Smith", country: "Australia", flag: "🇦🇺", role: "Batsman", format: "Test", rank: 1, rating: 911, runs: 9532, avg: 59.55, hundreds: 32, fifties: 38, image: "SS" },
-  { name: "Jasprit Bumrah", country: "India", flag: "🇮🇳", role: "Bowler", format: "T20I", rank: 1, rating: 867, wickets: 89, avg: 18.42, economy: 6.24, fiveWickets: 0, image: "JB" },
-  { name: "Kane Williamson", country: "New Zealand", flag: "🇳🇿", role: "Batsman", format: "Test", rank: 2, rating: 878, runs: 8971, avg: 54.98, hundreds: 31, fifties: 47, image: "KW" },
-  { name: "Babar Azam", country: "Pakistan", flag: "🇵🇰", role: "Batsman", format: "T20I", rank: 2, rating: 834, runs: 4021, avg: 45.12, hundreds: 3, fifties: 38, image: "BA" },
-  { name: "Pat Cummins", country: "Australia", flag: "🇦🇺", role: "Bowler", format: "Test", rank: 1, rating: 908, wickets: 267, avg: 21.34, economy: 2.98, fiveWickets: 8, image: "PC" },
+const resources = [
+  {
+    category: "Official Websites",
+    icon: "🌐",
+    color: "blue",
+    links: [
+      { name: "AHPRA Official Website", url: "https://www.ahpra.gov.au", description: "Start your IQNM self-check here" },
+      { name: "NCLEX Official Website", url: "https://www.nclex.com", description: "Register for NCLEX exam" },
+      { name: "Pearson VUE NCLEX", url: "https://home.pearsonvue.com/nclex", description: "Book your exam centre" },
+      { name: "NCSBN Official", url: "https://www.ncsbn.org", description: "NCLEX test plan and resources" },
+    ],
+  },
+  {
+    category: "Study Resources",
+    icon: "📚",
+    color: "green",
+    links: [
+      { name: "UWorld NCLEX", url: "https://www.uworld.com", description: "Best NCLEX question bank — highly recommended" },
+      { name: "Kaplan NCLEX", url: "https://www.kaptest.com/nclex", description: "Comprehensive NCLEX prep course" },
+      { name: "Archer Review", url: "https://archerreview.com", description: "Affordable NCLEX prep with high pass rates" },
+      { name: "Mark Klimek Lectures", url: "https://www.youtube.com", description: "Free audio lectures — search on YouTube" },
+    ],
+  },
+  {
+    category: "Australian Nursing Bodies",
+    icon: "🏥",
+    color: "red",
+    links: [
+      { name: "NMBA Nursing Board", url: "https://www.nursingmidwiferyboard.gov.au", description: "Standards for Australian nursing practice" },
+      { name: "ACER OSCE Information", url: "https://www.acer.org", description: "Information about the OSCE exam" },
+      { name: "ANF Australian Nursing Federation", url: "https://anf.org.au", description: "Support for nurses in Australia" },
+    ],
+  },
+  {
+    category: "Community & Support",
+    icon: "👥",
+    color: "purple",
+    links: [
+      { name: "NCLEX Subreddit", url: "https://www.reddit.com/r/NCLEX", description: "Community tips and experiences" },
+      { name: "AllNurses Forum", url: "https://allnurses.com", description: "Nursing community and NCLEX discussions" },
+      { name: "Facebook NCLEX Australia Groups", url: "https://www.facebook.com", description: "Search NCLEX Australia groups on Facebook" },
+    ],
+  },
 ];
 
-type Tab = "live" | "results" | "schedule" | "standings" | "players";
+const colorMap: Record<string, string> = {
+  blue: "bg-blue-50 border-blue-200 text-blue-800",
+  green: "bg-green-50 border-green-200 text-green-800",
+  purple: "bg-purple-50 border-purple-200 text-purple-800",
+  red: "bg-red-50 border-red-200 text-red-800",
+  orange: "bg-orange-50 border-orange-200 text-orange-800",
+  teal: "bg-teal-50 border-teal-200 text-teal-800",
+};
+
+const iconBgMap: Record<string, string> = {
+  blue: "bg-blue-100 text-blue-600",
+  green: "bg-green-100 text-green-600",
+  purple: "bg-purple-100 text-purple-600",
+  red: "bg-red-100 text-red-600",
+  orange: "bg-orange-100 text-orange-600",
+  teal: "bg-teal-100 text-teal-600",
+};
 
 export default function Home() {
-  const [tab, setTab] = useState<Tab>("live");
-  const [selectedMatch, setSelectedMatch] = useState<number | null>(null);
-  const [selectedFormat, setSelectedFormat] = useState<"All" | "Test" | "ODI" | "T20I">("All");
+  const [tab, setTab] = useState<Tab>("home");
+  const [expandedStep, setExpandedStep] = useState<number | null>(null);
+  const [expandedTopic, setExpandedTopic] = useState<number | null>(null);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [showExplanation, setShowExplanation] = useState(false);
+  const [score, setScore] = useState(0);
+  const [quizComplete, setQuizComplete] = useState(false);
 
-  const tabs: { id: Tab; label: string; icon: string }[] = [
-    { id: "live", label: "Live", icon: "🔴" },
-    { id: "results", label: "Results", icon: "✅" },
-    { id: "schedule", label: "Schedule", icon: "📅" },
-    { id: "standings", label: "Rankings", icon: "🏆" },
-    { id: "players", label: "Players", icon: "⭐" },
+  function handleAnswer(index: number) {
+    if (selectedAnswer !== null) return;
+    setSelectedAnswer(index);
+    setShowExplanation(true);
+    if (index === quizQuestions[currentQuestion].correct) {
+      setScore(score + 1);
+    }
+  }
+
+  function nextQuestion() {
+    if (currentQuestion < quizQuestions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      setSelectedAnswer(null);
+      setShowExplanation(false);
+    } else {
+      setQuizComplete(true);
+    }
+  }
+
+  function resetQuiz() {
+    setCurrentQuestion(0);
+    setSelectedAnswer(null);
+    setShowExplanation(false);
+    setScore(0);
+    setQuizComplete(false);
+  }
+
+  const tabs = [
+    { id: "home" as Tab, label: "Home", icon: "🏠" },
+    { id: "registration" as Tab, label: "Steps", icon: "📋" },
+    { id: "study" as Tab, label: "Study", icon: "📚" },
+    { id: "quiz" as Tab, label: "Quiz", icon: "❓" },
+    { id: "tips" as Tab, label: "Tips", icon: "💡" },
+    { id: "resources" as Tab, label: "Links", icon: "🔗" },
   ];
 
-  const formatColors: Record<string, string> = {
-    T20I: "bg-purple-500/20 text-purple-400 border-purple-500/30",
-    ODI: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-    Test: "bg-orange-500/20 text-orange-400 border-orange-500/30",
-  };
-
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen bg-gray-50 text-gray-800">
 
-      {/* Animated Background */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-green-900 rounded-full filter blur-3xl opacity-10 animate-pulse" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-900 rounded-full filter blur-3xl opacity-10 animate-pulse" />
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div className="max-w-3xl mx-auto px-4 py-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
+              <span className="text-white text-xl">🏥</span>
+            </div>
+            <div>
+              <h1 className="font-black text-xl text-gray-900">NCLEX Australia Guide</h1>
+              <p className="text-xs text-gray-500">Your complete registration roadmap</p>
+            </div>
+            <div className="ml-auto bg-blue-50 border border-blue-200 rounded-xl px-3 py-1">
+              <span className="text-blue-600 text-xs font-bold">2026 Updated</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="relative z-10 max-w-2xl mx-auto px-4 pb-24">
+      <div className="max-w-3xl mx-auto px-4 pb-24">
 
-        {/* Header */}
-        <div className="pt-8 pb-6 text-center">
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <span className="text-4xl">🏏</span>
-            <h1 className="text-4xl font-black bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
-              CricketHub
-            </h1>
-          </div>
-          <p className="text-gray-400 text-sm">Live Scores · Results · Rankings · Stats</p>
-        </div>
-
-        {/* LIVE TAB */}
-        {tab === "live" && (
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-              <h2 className="font-bold text-lg">Live Matches</h2>
-              <span className="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded-full border border-red-500/30">{liveMatches.length} LIVE</span>
+        {/* HOME TAB */}
+        {tab === "home" && (
+          <div className="py-6">
+            <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-3xl p-8 text-white mb-6">
+              <h2 className="text-3xl font-black mb-2">Your Path to Becoming an Australian RN 🇦🇺</h2>
+              <p className="opacity-90 leading-relaxed mb-4">
+                Everything you need to navigate the NCLEX registration process in Australia — from AHPRA self-check to your final registration as a Registered Nurse.
+              </p>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="bg-white/20 rounded-2xl p-3 text-center">
+                  <p className="text-2xl font-black">8</p>
+                  <p className="text-xs opacity-80">Steps</p>
+                </div>
+                <div className="bg-white/20 rounded-2xl p-3 text-center">
+                  <p className="text-2xl font-black">9-12</p>
+                  <p className="text-xs opacity-80">Months</p>
+                </div>
+                <div className="bg-white/20 rounded-2xl p-3 text-center">
+                  <p className="text-2xl font-black">2</p>
+                  <p className="text-xs opacity-80">Exams</p>
+                </div>
+              </div>
             </div>
 
-            {selectedMatch !== null ? (
-              // Match Detail View
-              <div>
-                <button onClick={() => setSelectedMatch(null)} className="flex items-center gap-2 text-gray-400 hover:text-white mb-4 transition-colors">
-                  ← Back to matches
-                </button>
-                {(() => {
-                  const match = liveMatches.find(m => m.id === selectedMatch)!;
-                  return (
-                    <div>
-                      <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl p-5 mb-4">
-                        <div className="flex justify-between items-center mb-4">
-                          <span className={`text-xs px-2 py-1 rounded-full border ${formatColors[match.format]}`}>{match.format}</span>
-                          <span className="text-xs text-gray-400">{match.tournament}</span>
-                          <div className="flex items-center gap-1">
-                            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                            <span className="text-red-400 text-xs font-bold">LIVE</span>
-                          </div>
-                        </div>
+            <h3 className="font-black text-lg mb-4">Quick Overview 📋</h3>
+            <div className="space-y-3 mb-6">
+              {[
+                { icon: "1️⃣", title: "AHPRA Self-Check", desc: "Complete eligibility assessment — Free", color: "blue" },
+                { icon: "2️⃣", title: "Pay & Submit Portfolio", desc: "AUD $410 + document submission", color: "green" },
+                { icon: "3️⃣", title: "English Proficiency", desc: "IELTS 7.0 / OET Grade B minimum", color: "purple" },
+                { icon: "4️⃣", title: "NCLEX-RN Exam", desc: "USD $350-400 — up to 150 questions", color: "red" },
+                { icon: "5️⃣", title: "OSCE Exam", desc: "AUD ~$4,000 — must be in Australia", color: "orange" },
+                { icon: "6️⃣", title: "Final Registration", desc: "Become a Registered Nurse! 🎓", color: "teal" },
+              ].map((item) => (
+                <div key={item.title} className={`flex items-center gap-4 p-4 rounded-2xl border ${colorMap[item.color]}`}>
+                  <span className="text-2xl">{item.icon}</span>
+                  <div>
+                    <p className="font-bold">{item.title}</p>
+                    <p className="text-sm opacity-70">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
 
-                        <div className="space-y-3 mb-4">
-                          {[match.team1, match.team2].map((team) => (
-                            <div key={team.code} className={`flex justify-between items-center p-3 rounded-2xl ${match.batting === team.code ? "bg-green-900/20 border border-green-700/30" : "bg-gray-800/50"}`}>
-                              <div className="flex items-center gap-3">
-                                <span className="text-2xl">{team.flag}</span>
-                                <div>
-                                  <p className="font-bold">{team.name}</p>
-                                  {match.batting === team.code && <p className="text-green-400 text-xs">Batting</p>}
-                                </div>
-                              </div>
-                              <div className="text-right">
-                                <p className="text-2xl font-black">{team.score}</p>
-                                <p className="text-gray-400 text-sm">{team.overs} ov</p>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="bg-yellow-900/20 border border-yellow-700/30 rounded-2xl p-3 mb-4">
-                          <p className="text-yellow-400 text-sm font-semibold text-center">{match.note}</p>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="bg-gray-800 rounded-2xl p-3 text-center">
-                            <p className="text-2xl font-black text-green-400">{match.crr}</p>
-                            <p className="text-gray-500 text-xs">Current RR</p>
-                          </div>
-                          <div className="bg-gray-800 rounded-2xl p-3 text-center">
-                            <p className="text-2xl font-black text-orange-400">{match.rrr}</p>
-                            <p className="text-gray-500 text-xs">Required RR</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Batsmen */}
-                      <div className="bg-gray-900 border border-gray-800 rounded-2xl p-4 mb-4">
-                        <h3 className="font-bold text-green-400 mb-3">🏏 Batting</h3>
-                        <div className="grid grid-cols-6 text-xs text-gray-500 mb-2">
-                          <span className="col-span-2">Batsman</span>
-                          <span className="text-center">R</span>
-                          <span className="text-center">B</span>
-                          <span className="text-center">4s/6s</span>
-                          <span className="text-center">SR</span>
-                        </div>
-                        {match.batsmen.map((b) => (
-                          <div key={b.name} className="grid grid-cols-6 py-2 border-t border-gray-800 text-sm">
-                            <span className="col-span-2 font-semibold truncate">{b.name}</span>
-                            <span className="text-center font-bold text-white">{b.runs}</span>
-                            <span className="text-center text-gray-400">{b.balls}</span>
-                            <span className="text-center text-gray-400">{b.fours}/{b.sixes}</span>
-                            <span className="text-center text-blue-400">{b.sr}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Bowlers */}
-                      <div className="bg-gray-900 border border-gray-800 rounded-2xl p-4 mb-4">
-                        <h3 className="font-bold text-purple-400 mb-3">🎯 Bowling</h3>
-                        <div className="grid grid-cols-5 text-xs text-gray-500 mb-2">
-                          <span className="col-span-2">Bowler</span>
-                          <span className="text-center">O</span>
-                          <span className="text-center">R</span>
-                          <span className="text-center">W</span>
-                        </div>
-                        {match.bowlers.map((b) => (
-                          <div key={b.name} className="grid grid-cols-5 py-2 border-t border-gray-800 text-sm">
-                            <span className="col-span-2 font-semibold truncate">{b.name}</span>
-                            <span className="text-center text-gray-400">{b.overs}</span>
-                            <span className="text-center">{b.runs}</span>
-                            <span className="text-center font-bold text-red-400">{b.wickets}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      <p className="text-center text-gray-600 text-xs">📍 {match.venue}</p>
-                    </div>
-                  );
-                })()}
+            <h3 className="font-black text-lg mb-4">Total Cost Estimate 💰</h3>
+            <div className="bg-white border border-gray-200 rounded-2xl p-5 mb-6">
+              {[
+                { item: "AHPRA Assessment Fee", cost: "AUD $410" },
+                { item: "English Proficiency Test", cost: "AUD $300-500" },
+                { item: "NCLEX-RN Exam Fee", cost: "USD $350-400" },
+                { item: "OSCE Exam Fee", cost: "AUD ~$4,000" },
+                { item: "Travel & Accommodation", cost: "Varies" },
+                { item: "Final Registration", cost: "AUD ~$150" },
+              ].map((row, i) => (
+                <div key={i} className={`flex justify-between py-2 ${i > 0 ? "border-t border-gray-100" : ""}`}>
+                  <span className="text-gray-600 text-sm">{row.item}</span>
+                  <span className="font-bold text-sm">{row.cost}</span>
+                </div>
+              ))}
+              <div className="border-t-2 border-gray-200 mt-2 pt-2 flex justify-between">
+                <span className="font-black">Estimated Total</span>
+                <span className="font-black text-blue-600">AUD $5,000-6,500+</span>
               </div>
-            ) : (
-              // Match List View
-              <div className="space-y-4">
-                {liveMatches.map((match) => (
-                  <div key={match.id} onClick={() => setSelectedMatch(match.id)}
-                    className="bg-gray-900 border border-gray-800 hover:border-green-700 rounded-3xl p-5 cursor-pointer transition-all hover:scale-[1.02]">
-                    <div className="flex justify-between items-center mb-3">
-                      <span className={`text-xs px-2 py-1 rounded-full border ${formatColors[match.format]}`}>{match.format}</span>
-                      <span className="text-xs text-gray-400 truncate mx-2">{match.tournament}</span>
-                      <div className="flex items-center gap-1">
-                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                        <span className="text-red-400 text-xs font-bold">LIVE</span>
+            </div>
+
+            <div className="bg-red-50 border border-red-200 rounded-2xl p-4">
+              <div className="flex gap-3">
+                <span className="text-2xl">⚠️</span>
+                <div>
+                  <p className="font-bold text-red-700 mb-1">Important 2026 Update</p>
+                  <p className="text-red-600 text-sm leading-relaxed">
+                    AHPRA has tightened deadlines in 2025-2026. Your ATT is now only valid for 90 days. Missing deadlines may close your dashboard and require restarting the process!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* REGISTRATION STEPS TAB */}
+        {tab === "registration" && (
+          <div className="py-6">
+            <h2 className="font-black text-2xl mb-2">Registration Steps 📋</h2>
+            <p className="text-gray-500 mb-6">Tap each step to see full details</p>
+            <div className="space-y-4">
+              {registrationSteps.map((step) => (
+                <div key={step.step} className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+                  <div
+                    className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+                    onClick={() => setExpandedStep(expandedStep === step.step ? null : step.step)}
+                  >
+                    <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-lg flex-shrink-0">
+                      {step.step}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-bold text-gray-900">{step.title}</p>
+                      <div className="flex gap-3 mt-1">
+                        <span className="text-xs text-gray-500">⏱ {step.duration}</span>
+                        <span className="text-xs text-blue-600 font-semibold">💰 {step.cost}</span>
                       </div>
                     </div>
-                    <div className="space-y-2 mb-3">
-                      {[match.team1, match.team2].map((team) => (
-                        <div key={team.code} className="flex justify-between items-center">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xl">{team.flag}</span>
-                            <span className={`font-semibold ${match.batting === team.code ? "text-white" : "text-gray-400"}`}>{team.name}</span>
-                            {match.batting === team.code && <span className="text-green-400 text-xs">●</span>}
+                    <span className="text-gray-400 text-xl">{expandedStep === step.step ? "↑" : "↓"}</span>
+                  </div>
+                  {expandedStep === step.step && (
+                    <div className="px-4 pb-4 border-t border-gray-100">
+                      <p className="text-gray-600 mt-3 mb-3 leading-relaxed">{step.description}</p>
+                      <div className="space-y-2 mb-3">
+                        {step.details.map((detail, i) => (
+                          <div key={i} className="flex gap-2 items-start">
+                            <span className="text-blue-500 mt-0.5 flex-shrink-0">✓</span>
+                            <span className="text-sm text-gray-700">{detail}</span>
                           </div>
-                          <div className="text-right">
-                            <span className={`font-black text-lg ${match.batting === team.code ? "text-white" : "text-gray-400"}`}>{team.score}</span>
-                            <span className="text-gray-500 text-xs ml-1">({team.overs})</span>
-                          </div>
+                        ))}
+                      </div>
+                      {step.warning && (
+                        <div className="bg-amber-50 border border-amber-200 rounded-xl p-3">
+                          <p className="text-amber-700 text-sm font-semibold">⚠️ {step.warning}</p>
                         </div>
-                      ))}
+                      )}
                     </div>
-                    <div className="bg-yellow-900/20 border border-yellow-700/20 rounded-xl p-2">
-                      <p className="text-yellow-400 text-xs text-center">{match.note}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* STUDY MATERIALS TAB */}
+        {tab === "study" && (
+          <div className="py-6">
+            <h2 className="font-black text-2xl mb-2">Study Materials 📚</h2>
+            <p className="text-gray-500 mb-6">NCLEX-RN exam content breakdown</p>
+
+            <div className="bg-white border border-gray-200 rounded-2xl p-5 mb-6">
+              <h3 className="font-bold mb-4">NCLEX-RN Content Areas</h3>
+              {studyTopics.map((topic, i) => (
+                <div key={i} className="mb-3">
+                  <div className="flex justify-between mb-1">
+                    <span className="text-sm font-semibold">{topic.icon} {topic.category}</span>
+                    <span className="text-sm text-blue-600 font-bold">{topic.percentage}</span>
+                  </div>
+                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-blue-500 rounded-full" style={{ width: topic.percentage.split("-")[1] }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <h3 className="font-black text-lg mb-4">Detailed Topics</h3>
+            <div className="space-y-4">
+              {studyTopics.map((topic, i) => (
+                <div key={i} className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+                  <div
+                    className="flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-50"
+                    onClick={() => setExpandedTopic(expandedTopic === i ? null : i)}
+                  >
+                    <span className="text-2xl">{topic.icon}</span>
+                    <div className="flex-1">
+                      <p className="font-bold">{topic.category}</p>
+                      <p className="text-blue-600 text-sm font-semibold">{topic.percentage} of exam</p>
                     </div>
-                    <p className="text-gray-600 text-xs text-center mt-2">📍 {match.venue} · Tap for details</p>
+                    <span className="text-gray-400">{expandedTopic === i ? "↑" : "↓"}</span>
+                  </div>
+                  {expandedTopic === i && (
+                    <div className="px-4 pb-4 border-t border-gray-100">
+                      <div className="space-y-2 mt-3">
+                        {topic.topics.map((t, j) => (
+                          <div key={j} className="flex gap-2 items-start">
+                            <span className="text-blue-500 flex-shrink-0 mt-0.5">•</span>
+                            <span className="text-sm text-gray-700">{t}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 bg-purple-50 border border-purple-200 rounded-2xl p-5">
+              <h3 className="font-bold text-purple-700 mb-3">⚡ Next Generation NCLEX (NGN)</h3>
+              <p className="text-purple-600 text-sm leading-relaxed mb-3">
+                Since April 2023, NCLEX uses the Next Generation format focusing on clinical judgment rather than memorisation.
+              </p>
+              <div className="space-y-2">
+                {[
+                  "Extended drag & drop questions",
+                  "Matrix and grid questions",
+                  "Bow-tie clinical judgment questions",
+                  "Case study based scenarios",
+                  "Enhanced multiple response questions",
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-2">
+                    <span className="text-purple-500">⚡</span>
+                    <span className="text-sm text-purple-700">{item}</span>
                   </div>
                 ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* QUIZ TAB */}
+        {tab === "quiz" && (
+          <div className="py-6">
+            <h2 className="font-black text-2xl mb-2">Practice Quiz ❓</h2>
+            <p className="text-gray-500 mb-6">Test your NCLEX knowledge</p>
+
+            {quizComplete ? (
+              <div className="text-center">
+                <div className="bg-white border border-gray-200 rounded-3xl p-8 mb-6">
+                  <span className="text-6xl block mb-4">
+                    {score >= 6 ? "🎉" : score >= 4 ? "👍" : "📚"}
+                  </span>
+                  <h3 className="text-3xl font-black mb-2">{score}/{quizQuestions.length}</h3>
+                  <p className="text-gray-500 mb-4">
+                    {score >= 6 ? "Excellent work! You are NCLEX ready!" :
+                      score >= 4 ? "Good job! Keep practising!" :
+                        "Keep studying — you will get there!"}
+                  </p>
+                  <div className="h-4 bg-gray-100 rounded-full overflow-hidden mb-4">
+                    <div
+                      className={`h-full rounded-full transition-all ${score >= 6 ? "bg-green-500" : score >= 4 ? "bg-blue-500" : "bg-orange-500"}`}
+                      style={{ width: `${(score / quizQuestions.length) * 100}%` }}
+                    />
+                  </div>
+                  <p className="text-gray-400 text-sm">{Math.round((score / quizQuestions.length) * 100)}% correct</p>
+                </div>
+                <button
+                  onClick={resetQuiz}
+                  className="bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold hover:bg-blue-700 transition-colors"
+                >
+                  Try Again 🔄
+                </button>
+              </div>
+            ) : (
+              <div>
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-sm text-gray-500">Question {currentQuestion + 1} of {quizQuestions.length}</span>
+                  <span className="text-sm font-bold text-blue-600">Score: {score}</span>
+                </div>
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden mb-6">
+                  <div
+                    className="h-full bg-blue-500 rounded-full transition-all"
+                    style={{ width: `${(currentQuestion / quizQuestions.length) * 100}%` }}
+                  />
+                </div>
+
+                <div className="bg-white border border-gray-200 rounded-2xl p-5 mb-4">
+                  <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg mb-3 inline-block">
+                    {quizQuestions[currentQuestion].category}
+                  </span>
+                  <p className="font-semibold text-gray-800 leading-relaxed mt-2">
+                    {quizQuestions[currentQuestion].question}
+                  </p>
+                </div>
+
+                <div className="space-y-3 mb-4">
+                  {quizQuestions[currentQuestion].options.map((option, i) => (
+                    <div
+                      key={i}
+                      onClick={() => handleAnswer(i)}
+                      className={`w-full text-left p-4 rounded-2xl border-2 transition-all font-medium cursor-pointer ${selectedAnswer === null
+                        ? "bg-white border-gray-200 hover:border-blue-400 hover:bg-blue-50"
+                        : i === quizQuestions[currentQuestion].correct
+                          ? "bg-green-50 border-green-400 text-green-700"
+                          : selectedAnswer === i
+                            ? "bg-red-50 border-red-400 text-red-700"
+                            : "bg-white border-gray-200 opacity-50"
+                        }`}
+                    >
+                      <span className="font-bold mr-2">{["A", "B", "C", "D"][i]}.</span> {option}
+                    </div>
+                  ))}
+                </div>
+
+                {showExplanation && (
+                  <div className={`rounded-2xl p-4 mb-4 ${selectedAnswer === quizQuestions[currentQuestion].correct ? "bg-green-50 border border-green-200" : "bg-red-50 border border-red-200"}`}>
+                    <p className={`font-bold mb-2 ${selectedAnswer === quizQuestions[currentQuestion].correct ? "text-green-700" : "text-red-700"}`}>
+                      {selectedAnswer === quizQuestions[currentQuestion].correct ? "✅ Correct!" : "❌ Incorrect"}
+                    </p>
+                    <p className="text-gray-700 text-sm leading-relaxed">
+                      {quizQuestions[currentQuestion].explanation}
+                    </p>
+                  </div>
+                )}
+
+                {selectedAnswer !== null && (
+                  <button
+                    onClick={nextQuestion}
+                    className="w-full bg-blue-600 text-white py-3 rounded-2xl font-bold hover:bg-blue-700 transition-colors"
+                  >
+                    {currentQuestion < quizQuestions.length - 1 ? "Next Question →" : "See Results 🎉"}
+                  </button>
+                )}
               </div>
             )}
           </div>
         )}
 
-        {/* RESULTS TAB */}
-        {tab === "results" && (
-          <div>
-            <h2 className="font-bold text-lg mb-4">✅ Recent Results</h2>
+        {/* TIPS TAB */}
+        {tab === "tips" && (
+          <div className="py-6">
+            <h2 className="font-black text-2xl mb-2">Exam Tips & Strategies 💡</h2>
+            <p className="text-gray-500 mb-6">Proven strategies to pass the NCLEX</p>
             <div className="space-y-4">
-              {recentResults.map((match) => (
-                <div key={match.id} className="bg-gray-900 border border-gray-800 rounded-3xl p-5">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className={`text-xs px-2 py-1 rounded-full border ${formatColors[match.format]}`}>{match.format}</span>
-                    <span className="text-xs text-gray-400">{match.date}</span>
+              {examTips.map((section, i) => (
+                <div key={i} className={`rounded-2xl border p-5 ${colorMap[section.color]}`}>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl ${iconBgMap[section.color]}`}>
+                      {section.icon}
+                    </div>
+                    <h3 className="font-black text-lg">{section.title}</h3>
                   </div>
-                  <div className="space-y-2 mb-3">
-                    {[match.team1, match.team2].map((team) => (
-                      <div key={team.name} className="flex justify-between items-center">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xl">{team.flag}</span>
-                          <span className="font-semibold">{team.name}</span>
-                        </div>
-                        <span className="font-black text-lg">{team.score}</span>
+                  <div className="space-y-2">
+                    {section.tips.map((tip, j) => (
+                      <div key={j} className="flex gap-2 items-start">
+                        <span className="mt-0.5 flex-shrink-0">→</span>
+                        <span className="text-sm leading-relaxed">{tip}</span>
                       </div>
                     ))}
                   </div>
-                  <div className="bg-green-900/20 border border-green-700/20 rounded-xl p-2 mb-2">
-                    <p className="text-green-400 text-xs text-center font-semibold">{match.result}</p>
-                  </div>
-                  <div className="flex justify-between text-xs text-gray-500">
-                    <span>⭐ MOM: {match.mom}</span>
-                    <span>📍 {match.venue}</span>
-                  </div>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* SCHEDULE TAB */}
-        {tab === "schedule" && (
-          <div>
-            <h2 className="font-bold text-lg mb-4">📅 Upcoming Matches</h2>
-            <div className="space-y-4">
-              {schedule.map((match) => (
-                <div key={match.id} className="bg-gray-900 border border-gray-800 rounded-3xl p-5">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className={`text-xs px-2 py-1 rounded-full border ${formatColors[match.format]}`}>{match.format}</span>
-                    <span className="text-xs text-gray-400">{match.tournament}</span>
+        {/* RESOURCES TAB */}
+        {tab === "resources" && (
+          <div className="py-6">
+            <h2 className="font-black text-2xl mb-2">Useful Links & Resources 🔗</h2>
+            <p className="text-gray-500 mb-6">Everything you need in one place</p>
+            <div className="space-y-6">
+              {resources.map((section, i) => (
+                <div key={i}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-2xl">{section.icon}</span>
+                    <h3 className="font-black text-lg">{section.category}</h3>
                   </div>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <span className="text-3xl">{match.team1.flag}</span>
-                      <span className="font-bold">{match.team1.name}</span>
-                    </div>
-                    <div className="text-center">
-                      <span className="bg-gray-800 px-3 py-1 rounded-full text-sm font-bold text-gray-300">VS</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold">{match.team2.name}</span>
-                      <span className="text-3xl">{match.team2.flag}</span>
-                    </div>
-                  </div>
-                  <div className="bg-blue-900/20 border border-blue-700/20 rounded-xl p-3">
-                    <div className="flex justify-between text-xs">
-                      <span className="text-blue-400">📅 {match.date}</span>
-                      <span className="text-blue-400">🕐 {match.time}</span>
-                    </div>
-                    <p className="text-gray-400 text-xs text-center mt-1">📍 {match.venue}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* STANDINGS TAB */}
-        {tab === "standings" && (
-          <div>
-            <h2 className="font-bold text-lg mb-4">🏆 ICC Team Rankings</h2>
-            <div className="flex gap-2 mb-4 overflow-x-auto">
-              {(["All", "Test", "ODI", "T20I"] as const).map((f) => (
-                <button key={f} onClick={() => setSelectedFormat(f)}
-                  className={`px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all ${selectedFormat === f ? "bg-green-500 text-white" : "bg-gray-900 text-gray-400 hover:bg-gray-800"}`}>
-                  {f}
-                </button>
-              ))}
-            </div>
-            <div className="space-y-3">
-              {teams.map((team, i) => (
-                <div key={team.code} className={`bg-gray-900 border rounded-2xl p-4 flex items-center gap-4 transition-all hover:scale-[1.02] ${i === 0 ? "border-yellow-500/50 bg-yellow-900/10" : i === 1 ? "border-gray-400/50 bg-gray-800/30" : i === 2 ? "border-orange-500/50 bg-orange-900/10" : "border-gray-800"}`}>
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-lg ${i === 0 ? "bg-yellow-500 text-black" : i === 1 ? "bg-gray-400 text-black" : i === 2 ? "bg-orange-500 text-black" : "bg-gray-800 text-gray-400"}`}>
-                    {team.ranking}
-                  </div>
-                  <span className="text-3xl">{team.flag}</span>
-                  <div className="flex-1">
-                    <p className="font-bold">{team.name}</p>
-                    <p className="text-gray-400 text-xs">{team.code}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-black text-xl text-green-400">{team.points}</p>
-                    <p className="text-gray-500 text-xs">Rating</p>
-                  </div>
-                  <div className="w-16">
-                    <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
-                      <div className={`h-full bg-gradient-to-r ${team.color} rounded-full`}
-                        style={{ width: `${(team.points / 125) * 100}%` }} />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* PLAYERS TAB */}
-        {tab === "players" && (
-          <div>
-            <h2 className="font-bold text-lg mb-4">⭐ Top Players</h2>
-            <div className="space-y-4">
-              {players.map((player) => (
-                <div key={player.name} className="bg-gray-900 border border-gray-800 rounded-3xl p-5 hover:border-gray-600 transition-all hover:scale-[1.02]">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center font-black text-lg`}>
-                      {player.image}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className="font-black text-lg">{player.name}</p>
-                        <span className="text-lg">{player.flag}</span>
+                  <div className="space-y-3">
+                    {section.links.map((link, j) => (
+                      <div
+                        key={j}
+                        onClick={() => window.open(link.url, "_blank")}
+                        className="flex items-center justify-between bg-white border border-gray-200 rounded-2xl p-4 hover:border-blue-400 hover:bg-blue-50 transition-all group cursor-pointer"
+                      >
+                        <div>
+                          <p className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{link.name}</p>
+                          <p className="text-gray-500 text-sm">{link.description}</p>
+                        </div>
+                        <span className="text-gray-400 group-hover:text-blue-500 text-xl">→</span>
                       </div>
-                      <p className="text-gray-400 text-sm">{player.country} · {player.role}</p>
-                    </div>
-                    <div className="text-right">
-                      <span className={`text-xs px-2 py-1 rounded-full border ${formatColors[player.format]}`}>{player.format}</span>
-                      <p className="text-yellow-400 font-bold mt-1">#{player.rank} Ranked</p>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-4 gap-2">
-                    {player.role === "Batsman" ? (
-                      <>
-                        <div className="bg-gray-800 rounded-xl p-2 text-center">
-                          <p className="font-black text-green-400">{player.runs.toLocaleString()}</p>
-                          <p className="text-gray-500 text-xs">Runs</p>
-                        </div>
-                        <div className="bg-gray-800 rounded-xl p-2 text-center">
-                          <p className="font-black text-blue-400">{player.avg}</p>
-                          <p className="text-gray-500 text-xs">Avg</p>
-                        </div>
-                        <div className="bg-gray-800 rounded-xl p-2 text-center">
-                          <p className="font-black text-yellow-400">{player.hundreds}</p>
-                          <p className="text-gray-500 text-xs">100s</p>
-                        </div>
-                        <div className="bg-gray-800 rounded-xl p-2 text-center">
-                          <p className="font-black text-purple-400">{player.fifties}</p>
-                          <p className="text-gray-500 text-xs">50s</p>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className="bg-gray-800 rounded-xl p-2 text-center">
-                          <p className="font-black text-red-400">{player.wickets}</p>
-                          <p className="text-gray-500 text-xs">Wickets</p>
-                        </div>
-                        <div className="bg-gray-800 rounded-xl p-2 text-center">
-                          <p className="font-black text-blue-400">{player.avg}</p>
-                          <p className="text-gray-500 text-xs">Avg</p>
-                        </div>
-                        <div className="bg-gray-800 rounded-xl p-2 text-center">
-                          <p className="font-black text-yellow-400">{player.economy}</p>
-                          <p className="text-gray-500 text-xs">Econ</p>
-                        </div>
-                        <div className="bg-gray-800 rounded-xl p-2 text-center">
-                          <p className="font-black text-purple-400">{player.fiveWickets}</p>
-                          <p className="text-gray-500 text-xs">5W</p>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                  <div className="mt-3">
-                    <div className="flex justify-between text-xs text-gray-500 mb-1">
-                      <span>ICC Rating</span>
-                      <span className="text-green-400 font-bold">{player.rating}</span>
-                    </div>
-                    <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-green-400 to-blue-400 rounded-full transition-all duration-700"
-                        style={{ width: `${(player.rating / 1000) * 100}%` }} />
-                    </div>
+                    ))}
                   </div>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-6 bg-gray-100 rounded-2xl p-4">
+              <p className="text-gray-500 text-xs leading-relaxed">
+                ⚠️ Disclaimer: This app is for informational purposes only. Always verify current requirements directly with AHPRA and NCSBN as regulations may change. Information is based on 2026 guidelines.
+              </p>
             </div>
           </div>
         )}
       </div>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gray-950/95 backdrop-blur border-t border-gray-800 z-50">
-        <div className="max-w-2xl mx-auto px-4 py-2">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
+        <div className="max-w-3xl mx-auto px-2 py-2">
           <div className="flex justify-around">
             {tabs.map((t) => (
-              <button key={t.id} onClick={() => { setTab(t.id); setSelectedMatch(null); }}
-                className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all ${tab === t.id ? "text-green-400" : "text-gray-500 hover:text-gray-300"}`}>
+              <button
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all ${tab === t.id ? "text-blue-600 bg-blue-50" : "text-gray-400 hover:text-gray-600"}`}
+              >
                 <span className="text-xl">{t.icon}</span>
                 <span className="text-xs font-semibold">{t.label}</span>
               </button>
@@ -519,375 +897,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-=======
-import { useState, useEffect } from "react";
-
-const reasons = [
-  "Your smile lights up every room you walk into ✨",
-  "The way you laugh makes everything better 😊",
-  "Your kindness and caring heart melts me every day 💝",
-  "You make ordinary moments feel magical 🌟",
-  "Your strength and courage inspire me every single day 💪",
-  "The way you make me feel at home wherever we are 🏡",
-  "Your beautiful eyes that I could get lost in forever 👀",
-  "How you always know exactly what to say 💬",
-  "The way you care for everyone around you 🤗",
-  "Simply because you are you — and that's everything 💕",
-];
-
-const timeline = [
-  { date: "The Day We Met", icon: "🌟", title: "The Beginning", description: "The universe conspired to bring two souls together. That day changed everything forever." },
-  { date: "Our First Date", icon: "🌹", title: "First Date", description: "Nervous smiles, butterflies, and a feeling that this was something truly special." },
-  { date: "When I Knew", icon: "💡", title: "I Knew You Were The One", description: "There was a moment — quiet and perfect — when I knew my heart belonged to you." },
-  { date: "Our Adventures", icon: "✈️", title: "Adventures Together", description: "Every journey is better with you by my side. You make every place feel like home." },
-  { date: "Hard Times", icon: "🤝", title: "Through It All", description: "We faced storms together and came out stronger. That's when I knew this love was real." },
-  { date: "Today & Forever", icon: "♾️", title: "Forever Yours", description: "Every day with you is a gift. I choose you today, tomorrow, and always." },
-];
-
-const floatingHearts = ["💕", "🌹", "💗", "✨", "💝", "🌸", "💖", "⭐"];
-
-export default function Home() {
-  const [currentSection, setCurrentSection] = useState<"intro" | "letter" | "reasons" | "timeline">("intro");
-  const [revealedReasons, setRevealedReasons] = useState<number[]>([]);
-  const [hearts, setHearts] = useState<{ id: number; x: number; emoji: string; duration: number; delay: number }[]>([]);
-  const [letterVisible, setLetterVisible] = useState(false);
-  const [timelineStep, setTimelineStep] = useState(0);
-  const [petals, setPetals] = useState<{ id: number; x: number; duration: number; delay: number; size: number }[]>([]);
-
-  useEffect(() => {
-    const newHearts = Array.from({ length: 15 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      emoji: floatingHearts[Math.floor(Math.random() * floatingHearts.length)],
-      duration: 4 + Math.random() * 6,
-      delay: Math.random() * 5,
-    }));
-    setHearts(newHearts);
-
-    const newPetals = Array.from({ length: 20 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      duration: 6 + Math.random() * 8,
-      delay: Math.random() * 8,
-      size: 10 + Math.random() * 16,
-    }));
-    setPetals(newPetals);
-  }, []);
-
-  useEffect(() => {
-    if (currentSection === "letter") {
-      setTimeout(() => setLetterVisible(true), 300);
-    }
-    if (currentSection === "timeline") {
-      setTimelineStep(0);
-      timeline.forEach((_, i) => {
-        setTimeout(() => setTimelineStep(i + 1), i * 600);
-      });
-    }
-  }, [currentSection]);
-
-  function revealReason(index: number) {
-    if (!revealedReasons.includes(index)) {
-      setRevealedReasons([...revealedReasons, index]);
-    }
-  }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100 text-gray-800 overflow-hidden relative">
-
-      {/* Falling Petals */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        {petals.map((petal) => (
-          <div
-            key={petal.id}
-            className="absolute text-pink-300 animate-bounce opacity-40"
-            style={{
-              left: `${petal.x}%`,
-              fontSize: `${petal.size}px`,
-              animationDuration: `${petal.duration}s`,
-              animationDelay: `${petal.delay}s`,
-              top: `${Math.random() * 100}%`,
-            }}
-          >
-            🌸
-          </div>
-        ))}
-      </div>
-
-      {/* Floating Hearts */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        {hearts.map((heart) => (
-          <div
-            key={heart.id}
-            className="absolute animate-pulse opacity-30"
-            style={{
-              left: `${heart.x}%`,
-              top: `${Math.random() * 100}%`,
-              fontSize: "20px",
-              animationDuration: `${heart.duration}s`,
-              animationDelay: `${heart.delay}s`,
-            }}
-          >
-            {heart.emoji}
-          </div>
-        ))}
-      </div>
-
-      <div className="relative z-10 max-w-2xl mx-auto px-4 py-8">
-
-        {/* INTRO SECTION */}
-        {currentSection === "intro" && (
-          <div className="min-h-screen flex flex-col items-center justify-center text-center">
-            <div className="mb-8 animate-pulse">
-              <span className="text-8xl">🌹</span>
-            </div>
-            <p className="text-pink-400 text-lg tracking-widest uppercase mb-4 font-semibold">
-              A special place made just for
-            </p>
-            <h1 className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-pink-500 to-rose-400 mb-4">
-              Niru
-            </h1>
-            <p className="text-pink-300 text-2xl mb-2">💕</p>
-            <p className="text-gray-500 text-lg max-w-sm mb-12 leading-relaxed">
-              A little corner of the internet dedicated entirely to you and how much you mean to me.
-            </p>
-
-            {/* ✅ UPDATED — Niru's Profile Photo */}
-            <div className="w-48 h-48 rounded-full border-4 border-pink-300 shadow-xl overflow-hidden mb-12 relative">
-              <img src="/Niru.JPG" alt="Niru" className="w-full h-full object-cover" />
-              <div className="absolute -top-2 -right-2 text-2xl animate-bounce">💕</div>
-              <div className="absolute -bottom-2 -left-2 text-2xl animate-bounce">🌹</div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4 w-full max-w-sm mb-12">
-              {[
-                { icon: "💌", label: "Love Letter" },
-                { icon: "💝", label: "Reasons" },
-                { icon: "📖", label: "Our Story" },
-              ].map(({ icon, label }) => (
-                <div key={label} className="bg-white/60 backdrop-blur rounded-2xl p-3 text-center border border-pink-200">
-                  <span className="text-3xl block mb-1">{icon}</span>
-                  <span className="text-pink-500 text-xs font-semibold">{label}</span>
-                </div>
-              ))}
-            </div>
-
-            <button
-              onClick={() => setCurrentSection("letter")}
-              className="bg-gradient-to-r from-rose-400 to-pink-500 text-white px-12 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-pink-300 hover:scale-105 transition-all animate-pulse"
-            >
-              Open with Love 💕
-            </button>
-          </div>
-        )}
-
-        {/* LOVE LETTER SECTION */}
-        {currentSection === "letter" && (
-          <div className="min-h-screen flex flex-col items-center justify-center py-12">
-            <button onClick={() => setCurrentSection("intro")} className="self-start text-pink-400 hover:text-pink-600 mb-6 transition-colors">
-              ← Back
-            </button>
-
-            <div className="text-center mb-8">
-              <span className="text-5xl">💌</span>
-              <h2 className="text-3xl font-black text-rose-500 mt-2">A Letter For You</h2>
-            </div>
-
-            <div className={`bg-white/80 backdrop-blur border border-pink-200 rounded-3xl p-8 shadow-xl transition-all duration-1000 ${letterVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-              <div className="relative">
-                <div className="absolute inset-0 flex flex-col gap-8 pt-8">
-                  {Array.from({ length: 12 }).map((_, i) => (
-                    <div key={i} className="border-b border-pink-100 w-full" />
-                  ))}
-                </div>
-
-                <div className="relative z-10 font-serif">
-                  <p className="text-pink-400 text-sm mb-6 text-right">To my dearest Niru 🌹</p>
-
-                  <p className="text-gray-700 leading-9 mb-6 text-lg">
-                    There are moments in life that you know will stay with you forever — and meeting you was one of them.
-                    From the very first time I saw you, something inside me just <span className="text-rose-500 font-semibold">knew</span>.
-                  </p>
-
-                  <p className="text-gray-700 leading-9 mb-6 text-lg">
-                    You came into my life and quietly made everything better. Better mornings, better days,
-                    better versions of myself. You have this beautiful way of making even the smallest moments
-                    feel like <span className="text-rose-500 font-semibold">magic</span>.
-                  </p>
-
-                  <p className="text-gray-700 leading-9 mb-6 text-lg">
-                    I love the way you laugh. I love the way you care. I love how you don't even realise
-                    how absolutely <span className="text-rose-500 font-semibold">extraordinary</span> you are.
-                    But I see it, Niru — I see all of it, every single day.
-                  </p>
-
-                  <p className="text-gray-700 leading-9 mb-6 text-lg">
-                    This little website is my way of telling you that you are loved — deeply, completely,
-                    and without condition. You deserve the whole world, and I promise to spend every day
-                    trying to give it to you. 💕
-                  </p>
-
-                  <p className="text-gray-700 leading-9 mb-8 text-lg">
-                    So here it is — a tiny corner of the internet, made just for you.
-                    Because you deserve to know how <span className="text-rose-500 font-semibold">incredibly loved</span> you are.
-                  </p>
-
-                  <p className="text-rose-500 font-bold text-right text-lg">Forever yours 🌹</p>
-                </div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setCurrentSection("reasons")}
-              className="mt-8 bg-gradient-to-r from-rose-400 to-pink-500 text-white px-10 py-4 rounded-full font-bold shadow-lg hover:scale-105 transition-all"
-            >
-              See Why I Love You 💝
-            </button>
-          </div>
-        )}
-
-        {/* REASONS SECTION */}
-        {currentSection === "reasons" && (
-          <div className="py-12">
-            <button onClick={() => setCurrentSection("letter")} className="text-pink-400 hover:text-pink-600 mb-6 transition-colors block">
-              ← Back
-            </button>
-
-            <div className="text-center mb-10">
-              <span className="text-5xl block mb-3">💝</span>
-              <h2 className="text-3xl font-black text-rose-500 mb-2">
-                10 Reasons I Love You
-              </h2>
-              <p className="text-pink-400">Tap each card to reveal ✨</p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 mb-10">
-              {reasons.map((reason, i) => (
-                <div
-                  key={i}
-                  onClick={() => revealReason(i)}
-                  className={`rounded-3xl p-4 cursor-pointer transition-all duration-500 hover:scale-105 min-h-28 flex items-center justify-center text-center border-2 ${
-                    revealedReasons.includes(i)
-                      ? "bg-gradient-to-br from-rose-100 to-pink-100 border-pink-300 shadow-lg"
-                      : "bg-white/60 border-pink-200 hover:border-pink-400"
-                  }`}
-                >
-                  {revealedReasons.includes(i) ? (
-                    <div>
-                      <p className="text-pink-400 font-black text-2xl mb-2">#{i + 1}</p>
-                      <p className="text-gray-700 text-sm leading-relaxed">{reason}</p>
-                    </div>
-                  ) : (
-                    <div>
-                      <span className="text-4xl block mb-2">💕</span>
-                      <p className="text-pink-300 text-sm">Tap to reveal</p>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {revealedReasons.length === reasons.length && (
-              <div className="bg-gradient-to-r from-rose-400 to-pink-500 rounded-3xl p-6 text-center text-white mb-6 animate-pulse">
-                <span className="text-4xl block mb-2">🎉</span>
-                <p className="font-black text-xl">And so many more reasons, Niru!</p>
-                <p className="opacity-80 mt-1">You are loved more than words can say 💕</p>
-              </div>
-            )}
-
-            <div className="text-center">
-              <p className="text-pink-400 mb-2">{revealedReasons.length}/{reasons.length} revealed</p>
-              <div className="h-2 bg-pink-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-rose-400 to-pink-500 rounded-full transition-all duration-500"
-                  style={{ width: `${(revealedReasons.length / reasons.length) * 100}%` }}
-                />
-              </div>
-            </div>
-
-            <button
-              onClick={() => setCurrentSection("timeline")}
-              className="mt-8 w-full bg-gradient-to-r from-rose-400 to-pink-500 text-white py-4 rounded-full font-bold shadow-lg hover:scale-105 transition-all"
-            >
-              Our Love Story 📖
-            </button>
-          </div>
-        )}
-
-        {/* TIMELINE SECTION */}
-        {currentSection === "timeline" && (
-          <div className="py-12">
-            <button onClick={() => setCurrentSection("reasons")} className="text-pink-400 hover:text-pink-600 mb-6 transition-colors block">
-              ← Back
-            </button>
-
-            <div className="text-center mb-10">
-              <span className="text-5xl block mb-3">📖</span>
-              <h2 className="text-3xl font-black text-rose-500 mb-2">Our Story</h2>
-              <p className="text-pink-400">A love story worth telling 🌹</p>
-            </div>
-
-            <div className="relative">
-              <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-rose-300 to-pink-200" />
-              <div className="space-y-8">
-                {timeline.map((item, i) => (
-                  <div
-                    key={i}
-                    className={`flex gap-6 transition-all duration-700 ${timelineStep > i ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"}`}
-                  >
-                    <div className="relative flex-shrink-0">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center text-xl shadow-lg border-4 border-white">
-                        {item.icon}
-                      </div>
-                    </div>
-                    <div className="bg-white/80 backdrop-blur border border-pink-200 rounded-3xl p-5 flex-1 shadow-sm">
-                      <p className="text-pink-400 text-xs font-semibold uppercase tracking-wider mb-1">{item.date}</p>
-                      <h3 className="font-black text-lg text-gray-800 mb-2">{item.title}</h3>
-                      <p className="text-gray-600 leading-relaxed text-sm">{item.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Final Message */}
-            <div className="mt-12 bg-gradient-to-br from-rose-400 to-pink-500 rounded-3xl p-8 text-white text-center shadow-xl">
-              <span className="text-6xl block mb-4">💍</span>
-              <h3 className="text-2xl font-black mb-3">To Niru, With All My Love</h3>
-              <p className="leading-relaxed opacity-90 mb-4">
-                Every chapter of this story has been beautiful because of you.
-                And I can't wait to write every chapter that comes next — together. 💕
-              </p>
-              <p className="font-bold text-lg">Always & Forever 🌹</p>
-            </div>
-
-            {/* ✅ UPDATED — Memory Photos */}
-            <div className="mt-8">
-              <h3 className="text-center font-bold text-rose-500 mb-4">Our Memories 📸</h3>
-              <div className="grid grid-cols-3 gap-3">
-                {["photo1.JPG", "photo2.JPG", "photo3.PNG",
-                  "photo4.PNG", "photo5.PNG", "photo6.JPG"].map((photo, i) => (
-                  <div key={i} className="aspect-square rounded-2xl overflow-hidden border-2 border-pink-200 shadow-sm">
-                    <img
-                      src={`/${photo}`}
-                      alt={`Memory ${i + 1}`}
-                      className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <button
-              onClick={() => setCurrentSection("intro")}
-              className="mt-8 w-full bg-gradient-to-r from-rose-400 to-pink-500 text-white py-4 rounded-full font-bold shadow-lg hover:scale-105 transition-all"
-            >
-              Back to Start 🌹
-            </button>
-          </div>
-        )}
-      </div>
->>>>>>> 9f2d3ad83c3f5005108d2bd3468d3c7dc21d0421
     </div>
   );
 }
