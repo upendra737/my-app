@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Tab = "home" | "registration" | "study" | "quiz" | "tips" | "resources";
 
@@ -140,61 +141,42 @@ const registrationSteps = [
   },
 ];
 
-const studyTopics = [
+const studyCategories = [
   {
-    category: "Safe & Effective Care Environment",
+    title: "Safe & Effective Care Environment",
     percentage: "17-23%",
     icon: "🛡️",
     color: "blue",
-    topics: [
-      "Management of Care — delegation, prioritisation, case management",
-      "Safety & Infection Control — standard precautions, error prevention",
-      "Accident & Error Prevention",
-      "Emergency Response Planning",
-      "Handling Hazardous Materials",
-      "Safe Use of Equipment",
-    ],
+    path: "/study/safe-care",
+    subtopics: ["Management of Care", "Prioritisation", "Infection Control", "Legal & Ethics", "Error Prevention", "Emergency Response"],
+    description: "Delegation, prioritisation, infection control, legal and ethical practice",
   },
   {
-    category: "Health Promotion & Maintenance",
+    title: "Health Promotion & Maintenance",
     percentage: "6-12%",
     icon: "💚",
     color: "green",
-    topics: [
-      "Ante/Intra/Postpartum and Newborn Care",
-      "Developmental Stages & Transitions",
-      "Health Screening",
-      "High Risk Behaviours",
-      "Lifestyle Choices",
-      "Self-Care & Disease Prevention",
-    ],
+    path: "/study/health-promotion",
+    subtopics: ["Maternal & Newborn", "Developmental Stages", "Health Screening", "Immunisation", "Lifestyle Choices"],
+    description: "Maternal care, developmental stages, health screening and immunisation",
   },
   {
-    category: "Psychosocial Integrity",
+    title: "Psychosocial Integrity",
     percentage: "6-12%",
     icon: "🧠",
     color: "purple",
-    topics: [
-      "Abuse & Neglect",
-      "Behavioural Interventions",
-      "Chemical & Other Dependencies",
-      "Coping Mechanisms",
-      "Crisis Intervention",
-      "Mental Health Concepts",
-      "Therapeutic Communication",
-    ],
+    path: "/study/psychosocial",
+    subtopics: ["Mental Health", "Therapeutic Communication", "Crisis Intervention", "Substance Abuse", "Abuse & Neglect", "Coping Mechanisms"],
+    description: "Mental health, therapeutic communication, crisis intervention and substance abuse",
   },
   {
-    category: "Physiological Integrity",
+    title: "Physiological Integrity",
     percentage: "38-62%",
     icon: "❤️",
     color: "red",
-    topics: [
-      "Basic Care & Comfort — hygiene, mobility, nutrition",
-      "Pharmacological Therapies — medication administration, adverse effects",
-      "Reduction of Risk Potential — lab values, diagnostic tests",
-      "Physiological Adaptation — fluid/electrolytes, medical emergencies",
-    ],
+    path: "/study/physiological",
+    subtopics: ["Pharmacology", "Cardiovascular", "Respiratory", "Neurological", "Endocrine", "Renal", "Fluid & Electrolytes", "Acid-Base", "Lab Values", "Gastrointestinal", "Musculoskeletal", "Pain Management", "Perioperative"],
+    description: "The largest section — pharmacology, body systems, lab values and more",
   },
 ];
 
@@ -443,10 +425,31 @@ const iconBgMap: Record<string, string> = {
   teal: "bg-teal-100 text-teal-600",
 };
 
+const studyColorMap: Record<string, string> = {
+  blue: "border-blue-200 hover:border-blue-400 hover:bg-blue-50",
+  green: "border-green-200 hover:border-green-400 hover:bg-green-50",
+  purple: "border-purple-200 hover:border-purple-400 hover:bg-purple-50",
+  red: "border-red-200 hover:border-red-400 hover:bg-red-50",
+};
+
+const studyBadgeMap: Record<string, string> = {
+  blue: "bg-blue-100 text-blue-700",
+  green: "bg-green-100 text-green-700",
+  purple: "bg-purple-100 text-purple-700",
+  red: "bg-red-100 text-red-700",
+};
+
+const studyPercentMap: Record<string, string> = {
+  blue: "text-blue-600",
+  green: "text-green-600",
+  purple: "text-purple-600",
+  red: "text-red-600",
+};
+
 export default function Home() {
+  const router = useRouter();
   const [tab, setTab] = useState<Tab>("home");
   const [expandedStep, setExpandedStep] = useState<number | null>(null);
-  const [expandedTopic, setExpandedTopic] = useState<number | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
@@ -639,58 +642,58 @@ export default function Home() {
           </div>
         )}
 
-        {/* STUDY MATERIALS TAB */}
+        {/* STUDY TAB — UPDATED ✅ */}
         {tab === "study" && (
           <div className="py-6">
             <h2 className="font-black text-2xl mb-2">Study Materials 📚</h2>
-            <p className="text-gray-500 mb-6">NCLEX-RN exam content breakdown</p>
+            <p className="text-gray-500 mb-4">Select a category to start studying</p>
 
+            {/* Content breakdown bar */}
             <div className="bg-white border border-gray-200 rounded-2xl p-5 mb-6">
-              <h3 className="font-bold mb-4">NCLEX-RN Content Areas</h3>
-              {studyTopics.map((topic, i) => (
+              <h3 className="font-bold mb-4 text-gray-700">NCLEX-RN Content Breakdown</h3>
+              {studyCategories.map((cat, i) => (
                 <div key={i} className="mb-3">
                   <div className="flex justify-between mb-1">
-                    <span className="text-sm font-semibold">{topic.icon} {topic.category}</span>
-                    <span className="text-sm text-blue-600 font-bold">{topic.percentage}</span>
+                    <span className="text-sm font-semibold text-gray-700">{cat.icon} {cat.title}</span>
+                    <span className={`text-sm font-bold ${studyPercentMap[cat.color]}`}>{cat.percentage}</span>
                   </div>
                   <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-blue-500 rounded-full" style={{ width: topic.percentage.split("-")[1] }} />
+                    <div className={`h-full rounded-full ${cat.color === "blue" ? "bg-blue-500" : cat.color === "green" ? "bg-green-500" : cat.color === "purple" ? "bg-purple-500" : "bg-red-500"}`}
+                      style={{ width: cat.percentage.split("-")[1] }} />
                   </div>
                 </div>
               ))}
             </div>
 
-            <h3 className="font-black text-lg mb-4">Detailed Topics</h3>
+            {/* Clickable category cards */}
             <div className="space-y-4">
-              {studyTopics.map((topic, i) => (
-                <div key={i} className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-                  <div
-                    className="flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-50"
-                    onClick={() => setExpandedTopic(expandedTopic === i ? null : i)}
-                  >
-                    <span className="text-2xl">{topic.icon}</span>
+              {studyCategories.map((cat, i) => (
+                <div
+                  key={i}
+                  onClick={() => router.push(cat.path)}
+                  className={`bg-white border-2 rounded-2xl p-5 cursor-pointer transition-all hover:scale-[1.02] shadow-sm ${studyColorMap[cat.color]}`}
+                >
+                  <div className="flex items-center gap-4 mb-3">
+                    <span className="text-4xl">{cat.icon}</span>
                     <div className="flex-1">
-                      <p className="font-bold">{topic.category}</p>
-                      <p className="text-blue-600 text-sm font-semibold">{topic.percentage} of exam</p>
+                      <p className="font-black text-gray-900 text-lg">{cat.title}</p>
+                      <p className={`text-sm font-bold ${studyPercentMap[cat.color]}`}>{cat.percentage} of NCLEX exam</p>
+                      <p className="text-gray-500 text-xs mt-1">{cat.description}</p>
                     </div>
-                    <span className="text-gray-400">{expandedTopic === i ? "↑" : "↓"}</span>
+                    <span className="text-gray-400 text-2xl">→</span>
                   </div>
-                  {expandedTopic === i && (
-                    <div className="px-4 pb-4 border-t border-gray-100">
-                      <div className="space-y-2 mt-3">
-                        {topic.topics.map((t, j) => (
-                          <div key={j} className="flex gap-2 items-start">
-                            <span className="text-blue-500 flex-shrink-0 mt-0.5">•</span>
-                            <span className="text-sm text-gray-700">{t}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                  <div className="flex flex-wrap gap-2">
+                    {cat.subtopics.map((sub, j) => (
+                      <span key={j} className={`text-xs px-2 py-1 rounded-full font-medium ${studyBadgeMap[cat.color]}`}>
+                        {sub}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
 
+            {/* NGN Info */}
             <div className="mt-6 bg-purple-50 border border-purple-200 rounded-2xl p-5">
               <h3 className="font-bold text-purple-700 mb-3">⚡ Next Generation NCLEX (NGN)</h3>
               <p className="text-purple-600 text-sm leading-relaxed mb-3">
@@ -719,7 +722,6 @@ export default function Home() {
           <div className="py-6">
             <h2 className="font-black text-2xl mb-2">Practice Quiz ❓</h2>
             <p className="text-gray-500 mb-6">Test your NCLEX knowledge</p>
-
             {quizComplete ? (
               <div className="text-center">
                 <div className="bg-white border border-gray-200 rounded-3xl p-8 mb-6">
@@ -740,10 +742,7 @@ export default function Home() {
                   </div>
                   <p className="text-gray-400 text-sm">{Math.round((score / quizQuestions.length) * 100)}% correct</p>
                 </div>
-                <button
-                  onClick={resetQuiz}
-                  className="bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold hover:bg-blue-700 transition-colors"
-                >
+                <button onClick={resetQuiz} className="bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold hover:bg-blue-700 transition-colors">
                   Try Again 🔄
                 </button>
               </div>
@@ -754,12 +753,9 @@ export default function Home() {
                   <span className="text-sm font-bold text-blue-600">Score: {score}</span>
                 </div>
                 <div className="h-2 bg-gray-100 rounded-full overflow-hidden mb-6">
-                  <div
-                    className="h-full bg-blue-500 rounded-full transition-all"
-                    style={{ width: `${(currentQuestion / quizQuestions.length) * 100}%` }}
-                  />
+                  <div className="h-full bg-blue-500 rounded-full transition-all"
+                    style={{ width: `${(currentQuestion / quizQuestions.length) * 100}%` }} />
                 </div>
-
                 <div className="bg-white border border-gray-200 rounded-2xl p-5 mb-4">
                   <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg mb-3 inline-block">
                     {quizQuestions[currentQuestion].category}
@@ -768,7 +764,6 @@ export default function Home() {
                     {quizQuestions[currentQuestion].question}
                   </p>
                 </div>
-
                 <div className="space-y-3 mb-4">
                   {quizQuestions[currentQuestion].options.map((option, i) => (
                     <div
@@ -787,7 +782,6 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
-
                 {showExplanation && (
                   <div className={`rounded-2xl p-4 mb-4 ${selectedAnswer === quizQuestions[currentQuestion].correct ? "bg-green-50 border border-green-200" : "bg-red-50 border border-red-200"}`}>
                     <p className={`font-bold mb-2 ${selectedAnswer === quizQuestions[currentQuestion].correct ? "text-green-700" : "text-red-700"}`}>
@@ -798,12 +792,8 @@ export default function Home() {
                     </p>
                   </div>
                 )}
-
                 {selectedAnswer !== null && (
-                  <button
-                    onClick={nextQuestion}
-                    className="w-full bg-blue-600 text-white py-3 rounded-2xl font-bold hover:bg-blue-700 transition-colors"
-                  >
+                  <button onClick={nextQuestion} className="w-full bg-blue-600 text-white py-3 rounded-2xl font-bold hover:bg-blue-700 transition-colors">
                     {currentQuestion < quizQuestions.length - 1 ? "Next Question →" : "See Results 🎉"}
                   </button>
                 )}
@@ -870,7 +860,6 @@ export default function Home() {
                 </div>
               ))}
             </div>
-
             <div className="mt-6 bg-gray-100 rounded-2xl p-4">
               <p className="text-gray-500 text-xs leading-relaxed">
                 ⚠️ Disclaimer: This app is for informational purposes only. Always verify current requirements directly with AHPRA and NCSBN as regulations may change. Information is based on 2026 guidelines.
