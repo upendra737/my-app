@@ -738,19 +738,3 @@ export default function GastrointestinalPage() {
     </div>
   );
 }
-```
-
----
-
-Save with **Cmd + S** and test!
-
-### Progress update mate:
-```
-✅ Pharmacology ✅ Cardiovascular ✅ Respiratory
-✅ Neurological ✅ Endocrine ✅ Renal
-✅ Fluid & Electrolytes ✅ Acid-Base ✅ Lab Values (rebuilt)
-✅ Gastrointestinal ← just done!
-
-⏳ Musculoskeletal
-⏳ Pain Management
-⏳ Perioperative
